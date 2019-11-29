@@ -1,0 +1,223 @@
+<html>
+    <head>
+        <title>Decoder for lightining payment</title>
+        <link href="https://fonts.googleapis.com/css?family=Anton&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+           
+
+        <style type = "text/css">
+            body{
+                background-color: #343A40
+            }
+
+            .jumbotronCss{
+                margin-top: 30px;
+            }
+
+            .para{
+                text-align: center;
+            }
+
+            .bottomPara{
+               margin: 0px;
+               color: white;
+            }
+
+            #OutputDiv{
+                display:none;
+            }
+
+            #alertDiv{
+                display:none;
+            }
+
+            td{
+                padding:10px 10px 5px 2px !important;
+                word-wrap: break-word;
+            }
+
+            .width{
+                color:rgba(0, 119, 255, 0.952);
+                
+            }
+
+            th{
+                font-weight: Bold;
+                font-family:Arial, Helvetica, sans-serif;
+                font-size:x-large;       
+               
+                
+                     }
+
+            .firstColumn{
+                font-weight: bold;
+               /*width: 300px;*/
+                color:rgba(0, 119, 255, 0.952);
+
+            }
+
+            table{
+                table-layout: fixed ;
+	          /*  width: 300px;*/
+            }
+
+            .forcedMargin{
+                margin-right: 400px !important;
+            }
+        
+            
+
+            .inside_tag{
+               
+                color: green;
+                word-wrap: break-word;
+            }
+
+            @media screen and (max-width: 500px) {
+                .inside_tag{
+                    width: 200px;
+                }
+            }
+
+
+
+            p{
+                margin:0px;
+                word-wrap: 'break-word';
+            }
+
+            h3,h4{
+                font-style: italic;
+            }
+
+        </style>
+
+    </head>
+
+
+
+
+
+
+
+    <body>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+            <div class= "container">
+                    <div class="jumbotron jumbotronCss">
+                        
+                        <div class = "para">
+                            <h1 >Lightining Payment Request Decoder</h1>
+                            <p >For decoding lightning network payment requests as defined in <span><a href="#">BOLT #11.</a></span></p>
+                        </div>    
+                        <div class="my-4">
+                            <form>
+                                <div class= "form-group">
+                                    <label for = "textarea">Request String:</label>
+                                    <textarea name = "mytext" class = "form-control" id = "textarea" rows="5" placeholder="Enter request string"></textarea> 
+                                </div>
+                                    
+                            </form>
+                            <button id = "but" class = "btn btn-primary btn-block ">Decode</button>
+                        </div>           
+
+                        <div id = "alertDiv" class = "alert alert-danger alert-dismissible fade show" role = "alert">  
+                           <!---     <strong>wd</strong> 
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button> -->
+                        </div>
+
+
+                        <div id = "OutputDiv" class = "alert alert-warning">
+                            <div><h3>Currency Information</h3></div>
+                            <table class = " table table-striped" >            
+                                <tbody class = "inside">
+                                    <tr>
+                                        
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div>
+                                <h4>Tags</h4>
+                                <div class = "tags inside_tag">
+                                    
+                                </div>
+                            </div>        
+
+                        </div>
+
+
+
+                    </div>
+
+                    <div class = "para">
+                        <a href = "https://github.com/Xtrimmer/lndecode">https://github.com/Xtrimmer/lndecodes</a>
+                        <p class = "bottomPara">If you think this little decoder is useful to you, then it's a good reason to do a donation.</p>
+                        <p class = "bottomPara">Your gratitude and finance help will motivate us to continue project development.</p>
+                    </div>
+
+            </div>
+
+
+    <script type = "text/javascript">
+    let text = null;
+    let Received_data;
+        $("#but").click(function(){
+            let errorMsg = "";
+            text = $("#textarea").val();
+
+           $.post("http://localhost:3000", {t: text}, function(data){
+            if(data){
+                $("#OutputDiv").css("display", "block");
+                $('#alertDiv').css("display", "none");
+                
+               
+                if((Received_data === undefined) || (data.decode.paymentRequest !== Received_data.decode.paymentRequest)){
+                
+                    Received_data = {...data};
+                    $(".tags, .inside").empty();
+  
+                    const tag_array = Received_data.decode.tags;
+                    for(let i=0; i<tag_array.length; i++)
+                        {   
+                            var temp = tag_array[i]
+                            $(".tags").append("<div><p>TagName: "+temp.tagName+"</p><p class = 'inside_tag'>Data: "+temp.data+"</p><hr></div>")
+                    }
+                    
+                    for (let properties in Received_data.decode){
+                         if(Received_data.decode.tags != Received_data.decode[properties]){
+                         $(".inside").append("<tr><td class = 'firstColumn'>"+properties+"</td> <td class = 'width'>"+Received_data.decode[properties]+"</td></tr>");
+                        }
+                    }   
+                }
+            }
+
+        
+        }).fail(function(){
+            $('#OutputDiv').css("display", "none");
+            $('#alertDiv').css("display", "block");
+
+            if($('#textarea').val() == ""){
+                errorMsg = "Cannot leave this field empty";
+                $('#alertDiv').html(errorMsg);
+            } else
+                errorMsg = "Key Entered is invalid";
+                $('#alertDiv').html(errorMsg);
+        });
+        });
+
+        
+       
+
+    </script>
+
+
+    </body>
+
+
+
+</html>
