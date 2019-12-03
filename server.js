@@ -1,7 +1,6 @@
 var express = require('express');
 var app = express();
 var path = require('path')
-const axios = require('axios');
 const bodyParser = require('body-parser')
 const bolt = require('bolt11')
  
@@ -19,8 +18,6 @@ app.post('/', function(req, res){
     var decoded = bolt.decode(printText);
     res.json({decode: decoded})
 })
-
-
 
 app.listen(3000, function(){
     console.log("Server started")

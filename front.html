@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Decoder for lightining payment</title>
+        <title>Lightining Payment Decoder</title>
         <link href="https://fonts.googleapis.com/css?family=Anton&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
          <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -8,11 +8,12 @@
 
         <style type = "text/css">
             body{
-                background-color: #343A40
+                background-image: linear-gradient(to bottom right, black, #FB4444 );
             }
 
             .jumbotronCss{
                 margin-top: 30px;
+                background-color: #D5FEF8;
             }
 
             .para{
@@ -52,14 +53,12 @@
 
             .firstColumn{
                 font-weight: bold;
-               /*width: 300px;*/
                 color:rgba(0, 119, 255, 0.952);
 
             }
 
             table{
                 table-layout: fixed ;
-	          /*  width: 300px;*/
             }
 
             .forcedMargin{
@@ -91,9 +90,35 @@
                 font-style: italic;
             }
 
+            .textBoxStyling{
+                width: 100%;
+                display: flex;
+                align-items: center;
+            }
+
+            .text{
+                width: 70%;
+                padding: 0px 20px;
+            }
+
+            button{
+                font-size: 20px;  
+                background-color: 161515;
+                padding: 50px 90px;
+                text-align: center;
+                font-weight: normal;
+                box-sizing:border-box;
+                border-radius: 5px;
+                color: White;
+                
+            }
+
+           
+
         </style>
 
     </head>
+
 
 
 
@@ -109,25 +134,23 @@
                     <div class="jumbotron jumbotronCss">
                         
                         <div class = "para">
-                            <h1 >Lightining Payment Request Decoder</h1>
-                            <p >For decoding lightning network payment requests as defined in <span><a href="#">BOLT #11.</a></span></p>
+                            <h1><em>Lightining Payment Decoder</em></h1>
+                            <p>Decoder for lightning network payment requests as per <span>
+                                <a href="https://github.com/lightningnetwork/lightning-rfc/blob/master/11-payment-encoding.md">BOLT #11.</a>
+                            </span></p>
                         </div>    
-                        <div class="my-4">
-                            <form>
+                        <div class = "textBoxStyling">
+                            <form class = "text">
                                 <div class= "form-group">
-                                    <label for = "textarea">Request String:</label>
+                                    <label for = "textarea">Enter Your Request String:</label>
                                     <textarea name = "mytext" class = "form-control" id = "textarea" rows="5" placeholder="Enter request string"></textarea> 
-                                </div>
-                                    
+                                </div>      
                             </form>
-                            <button id = "but" class = "btn btn-primary btn-block ">Decode</button>
+                            <button id = "but">Decode</button>
                         </div>           
 
                         <div id = "alertDiv" class = "alert alert-danger alert-dismissible fade show" role = "alert">  
-                           <!---     <strong>wd</strong> 
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                  <span aria-hidden="true">&times;</span>
-                                </button> -->
+                           
                         </div>
 
 
@@ -150,14 +173,17 @@
 
                         </div>
 
+                        <div id = "rawData">
+                            
+                        </div>
 
 
                     </div>
 
                     <div class = "para">
-                        <a href = "https://github.com/Xtrimmer/lndecode">https://github.com/Xtrimmer/lndecodes</a>
-                        <p class = "bottomPara">If you think this little decoder is useful to you, then it's a good reason to do a donation.</p>
-                        <p class = "bottomPara">Your gratitude and finance help will motivate us to continue project development.</p>
+                        <a href = "https://github.com/Moiz47/Lightining-decoder">https://github.com/Moiz47/Lightining-decoder</a>
+                        <p class = "bottomPara">Developed and powered by 
+                            <a href ="https://Ciphertrick.com"> Ciphertrick.com</a></p>
                     </div>
 
             </div>
@@ -174,25 +200,29 @@
             if(data){
                 $("#OutputDiv").css("display", "block");
                 $('#alertDiv').css("display", "none");
+                $('#rawData').css("display", "block");
                 
                
                 if((Received_data === undefined) || (data.decode.paymentRequest !== Received_data.decode.paymentRequest)){
                 
                     Received_data = {...data};
                     $(".tags, .inside").empty();
-  
+                    $("#rawData").empty();
+
                     const tag_array = Received_data.decode.tags;
                     for(let i=0; i<tag_array.length; i++)
                         {   
                             var temp = tag_array[i]
-                            $(".tags").append("<div><p>TagName: "+temp.tagName+"</p><p class = 'inside_tag'>Data: "+temp.data+"</p><hr></div>")
+                            $(".tags").append("<div><p>TagName: "+temp.tagName+"</p><p>Data: "+temp.data+"</p><hr></div>")
                     }
                     
                     for (let properties in Received_data.decode){
                          if(Received_data.decode.tags != Received_data.decode[properties]){
                          $(".inside").append("<tr><td class = 'firstColumn'>"+properties+"</td> <td class = 'width'>"+Received_data.decode[properties]+"</td></tr>");
                         }
-                    }   
+                    }
+                    
+                    $('#rawData').html("<h3>JSON data</h3><pre>"+ JSON.stringify(data, null, 2) + "</pre>");
                 }
             }
 
@@ -200,12 +230,13 @@
         }).fail(function(){
             $('#OutputDiv').css("display", "none");
             $('#alertDiv').css("display", "block");
+            $('#rawData').css("display", "none");
 
             if($('#textarea').val() == ""){
                 errorMsg = "Cannot leave this field empty";
                 $('#alertDiv').html(errorMsg);
             } else
-                errorMsg = "Key Entered is invalid";
+                errorMsg = "String entered is incorrect";
                 $('#alertDiv').html(errorMsg);
         });
         });
