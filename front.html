@@ -3,7 +3,7 @@
         <title>Lightining Payment Decoder</title>
         <link href="https://fonts.googleapis.com/css?family=Anton&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
            
 
         <style type = "text/css">
@@ -46,10 +46,8 @@
             th{
                 font-weight: Bold;
                 font-family:Arial, Helvetica, sans-serif;
-                font-size:x-large;       
-               
-                
-                     }
+                font-size:x-large;          
+             }
 
             .firstColumn{
                 font-weight: bold;
@@ -65,8 +63,6 @@
                 margin-right: 400px !important;
             }
         
-            
-
             .inside_tag{
                
                 color: green;
@@ -78,8 +74,6 @@
                     width: 200px;
                 }
             }
-
-
 
             p{
                 margin:0px;
@@ -113,16 +107,8 @@
                 
             }
 
-           
-
         </style>
-
     </head>
-
-
-
-
-
 
 
 
@@ -153,7 +139,6 @@
                            
                         </div>
 
-
                         <div id = "OutputDiv" class = "alert alert-warning">
                             <div><h3>Currency Information</h3></div>
                             <table class = " table table-striped" >            
@@ -170,13 +155,11 @@
                                     
                                 </div>
                             </div>        
-
                         </div>
 
                         <div id = "rawData">
                             
                         </div>
-
 
                     </div>
 
@@ -185,13 +168,19 @@
                         <p class = "bottomPara">Developed and powered by 
                             <a href ="https://Ciphertrick.com"> Ciphertrick.com</a></p>
                     </div>
-
             </div>
-
 
     <script type = "text/javascript">
     let text = null;
     let Received_data;
+    let coinTypeTestnet = "false";
+    const strTestnet = "https://1ml.com/testnet/node/";
+    const str = "https://1ml.com/node/";
+    let onemlLink = null;
+
+
+
+
         $("#but").click(function(){
             let errorMsg = "";
             text = $("#textarea").val();
@@ -209,16 +198,37 @@
                     $(".tags, .inside").empty();
                     $("#rawData").empty();
 
+                    if(Received_data.decode.coinType == "testnet"){
+                        coinTypeTestnet = true;
+                        
+                    }
+                    console.log(coinTypeTestnet);
+
                     const tag_array = Received_data.decode.tags;
-                    for(let i=0; i<tag_array.length; i++)
-                        {   
-                            var temp = tag_array[i]
-                            $(".tags").append("<div><p>TagName: "+temp.tagName+"</p><p>Data: "+temp.data+"</p><hr></div>")
+                    for(let i=0; i<tag_array.length; i++){   
+                        var temp = tag_array[i]
+                        $(".tags").append("<div><p>TagName: "+temp.tagName+"</p><p>Data: "+temp.data+"</p><hr></div>")
                     }
                     
-                    for (let properties in Received_data.decode){
-                         if(Received_data.decode.tags != Received_data.decode[properties]){
-                         $(".inside").append("<tr><td class = 'firstColumn'>"+properties+"</td> <td class = 'width'>"+Received_data.decode[properties]+"</td></tr>");
+                    for(let properties in Received_data.decode){
+                         
+                        if(Received_data.decode.tags != Received_data.decode[properties]){
+                            console.log("hello");
+                            if(properties == "payeeNodeKey"){
+                            
+                                if(coinTypeTestnet){
+                                    onemlLink = strTestnet.concat(Received_data.decode[properties] )
+                                    $(".inside").append("<tr><td class = 'firstColumn'>"+properties+"</td> <td class = 'width'>"+ "<a style = 'color: purple' href = '"+onemlLink+"' >" + Received_data.decode[properties]+"</a></td></tr>");
+                                    
+                                }else{
+                                    onemlLink = str.concat(Received_data.decode[properties] )
+                                    $(".inside").append("<tr><td class = 'firstColumn'>"+properties+"</td> <td class = 'width'>"+ "<a style = 'color: purple' href = '"+onemlLink+"' >" + Received_data.decode[properties]+"</a></td></tr>");
+                                
+                                }
+
+                            }else{
+                                $(".inside").append("<tr><td class = 'firstColumn'>"+properties+"</td> <td class = 'width'>"+Received_data.decode[properties]+"</td></tr>");
+                            }
                         }
                     }
                     
@@ -227,28 +237,20 @@
             }
 
         
-        }).fail(function(){
-            $('#OutputDiv').css("display", "none");
-            $('#alertDiv').css("display", "block");
-            $('#rawData').css("display", "none");
+            }).fail(function(){
+                $('#OutputDiv').css("display", "none");
+                $('#alertDiv').css("display", "block");
+                $('#rawData').css("display", "none");
 
-            if($('#textarea').val() == ""){
-                errorMsg = "Cannot leave this field empty";
-                $('#alertDiv').html(errorMsg);
-            } else
-                errorMsg = "String entered is incorrect";
-                $('#alertDiv').html(errorMsg);
+                if($('#textarea').val() == ""){
+                    errorMsg = "Cannot leave this field empty";
+                    $('#alertDiv').html(errorMsg);
+                } else{
+                    errorMsg = "String entered is incorrect";
+                    $('#alertDiv').html(errorMsg);
+                }
+            });
         });
-        });
-
-        
-       
-
     </script>
-
-
     </body>
-
-
-
 </html>

@@ -10,14 +10,13 @@ app.use(bodyParser.json());
 
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/front.html'));
-   
 });
 
 app.post('/', function(req, res){
     var printText = req.body.t;
     var decoded = bolt.decode(printText);
     res.json({decode: decoded})
-})
+});
 
 app.listen(3000, function(){
     console.log("Server started")
