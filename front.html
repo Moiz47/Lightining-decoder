@@ -185,7 +185,7 @@
             let errorMsg = "";
             text = $("#textarea").val();
 
-           $.post("http://localhost:3000", {t: text}, function(data){
+           $.post("/", {t: text}, function(data){
             if(data){
                 $("#OutputDiv").css("display", "block");
                 $('#alertDiv').css("display", "none");
@@ -218,11 +218,11 @@
                             
                                 if(coinTypeTestnet){
                                     onemlLink = strTestnet.concat(Received_data.decode[properties] )
-                                    $(".inside").append("<tr><td class = 'firstColumn'>"+properties+"</td> <td class = 'width'>"+ "<a style = 'color: purple' href = '"+onemlLink+"' >" + Received_data.decode[properties]+"</a></td></tr>");
+                                    $(".inside").append("<tr><td class = 'firstColumn'>"+properties+"</td> <td class = 'width'>"+ "<a style = 'color: purple' target='_blank' href = '"+onemlLink+"' >" + Received_data.decode[properties]+"</a></td></tr>");
                                     
                                 }else{
                                     onemlLink = str.concat(Received_data.decode[properties] )
-                                    $(".inside").append("<tr><td class = 'firstColumn'>"+properties+"</td> <td class = 'width'>"+ "<a style = 'color: purple' href = '"+onemlLink+"' >" + Received_data.decode[properties]+"</a></td></tr>");
+                                    $(".inside").append("<tr><td class = 'firstColumn'>"+properties+"</td> <td class = 'width'>"+ "<a target='_blank' style = 'color: purple' href = '"+onemlLink+"' >" + Received_data.decode[properties]+"</a></td></tr>");
                                 
                                 }
 

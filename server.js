@@ -18,7 +18,7 @@ app.post('/', function(req, res){
     res.json({decode: decoded})
 });
 
-app.listen(3000, function(){
+app.listen(3005, function(){
     console.log("Server started")
 });
 
