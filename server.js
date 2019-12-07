@@ -12,6 +12,14 @@ app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/front.html'));
 });
 
+//app.get('/.well-known/acme-challenge', function(req, res) {
+//    res.send('pong');
+//});
+
+
+console.log(path.join(`${__dirname}/.well-known/acme-challenge`));
+app.use('/.well-known/acme-challenge', express.static(path.join(`${__dirname}/.well-known/acme-challenge`), { dotfiles: 'allow' } ));
+
 app.post('/', function(req, res){
     var printText = req.body.t;
     var decoded = bolt.decode(printText);
