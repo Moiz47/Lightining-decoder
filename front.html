@@ -1,9 +1,15 @@
 <html>
     <head>
-        <title>Lightining Payment Decoder</title>
+        <title>Lightining Invoice Decoder</title>
+        <meta name="description" content="A tool for decoding lightning network payment invoice as defined in BOLT #11.">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel='shortcut icon' type='image/x-icon' href='favicon.ico'/>
         <link href="https://fonts.googleapis.com/css?family=Anton&display=swap" rel="stylesheet">
+        <link rel="shortcut icon" href="https://ciphertrick.com/wp-content/uploads/2017/05/xLogo_1494089410235-short-cropped-150x150.png.pagespeed.ic.hSnjOtGVIy.webp">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://kit.fontawesome.com/0f7fec5cc5.js" crossorigin="anonymous"></script>
            
 
         <style type = "text/css">
@@ -75,6 +81,11 @@
                 }
             }
 
+            pre {
+                background-color: #eeeeee;
+                padding: 10px
+            }
+
             p{
                 margin:0px;
                 word-wrap: 'break-word';
@@ -95,16 +106,9 @@
                 padding: 0px 20px;
             }
 
-            button{
-                font-size: 20px;  
-                background-color: 161515;
-                padding: 50px 90px;
-                text-align: center;
-                font-weight: normal;
-                box-sizing:border-box;
-                border-radius: 5px;
-                color: White;
-                
+            .btn.btn-primary {
+                font-size: 58px;
+                padding: 36px 90px;         
             }
 
         </style>
@@ -116,23 +120,40 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
             <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand" href="#">Lightning Decoder</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+              
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                  <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                      <a class="nav-link" href="https://ciphertrick.com">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                      <a class="nav-link" href="https://ciphertrick.com/the-lightning-network-how-to-install-send-and-receive-bitcoin-money/">Setup Your Own Lightning Node</a>
+                    </li>
+                </div>
+              </nav>
+            
             <div class= "container">
                     <div class="jumbotron jumbotronCss">
                         
                         <div class = "para">
-                            <h1><em>Lightining Payment Decoder</em></h1>
-                            <p>Decoder for lightning network payment requests as per <span>
+                            <h1><em style="color: #007bff">Lightining Payment Invoice Decoder</em></h1>
+                            <p>A tool for decoding lightning network payment invoice as defined in <span>
                                 <a href="https://github.com/lightningnetwork/lightning-rfc/blob/master/11-payment-encoding.md">BOLT #11.</a>
                             </span></p>
                         </div>    
                         <div class = "textBoxStyling">
                             <form class = "text">
                                 <div class= "form-group">
-                                    <label for = "textarea">Enter Your Request String:</label>
+                                    <label for = "textarea">Enter Your Invoice:</label>
                                     <textarea name = "mytext" class = "form-control" id = "textarea" rows="5" placeholder="Enter request string"></textarea> 
                                 </div>      
                             </form>
-                            <button id = "but">Decode</button>
+                            <button class="btn btn-primary" id = "but"><i class="fas fa-bolt"></i></button>
                         </div>           
 
                         <div id = "alertDiv" class = "alert alert-danger alert-dismissible fade show" role = "alert">  
@@ -140,8 +161,8 @@
                         </div>
 
                         <div id = "OutputDiv" class = "alert alert-warning">
-                            <div><h3>Currency Information</h3></div>
-                            <table class = " table table-striped" >            
+                            <div><h3>Invoice Information</h3></div>
+                            <table class = "table" >            
                                 <tbody class = "inside">
                                     <tr>
                                         
@@ -168,15 +189,42 @@
                         <p class = "bottomPara">Developed and powered by 
                             <a href ="https://Ciphertrick.com"> Ciphertrick.com</a></p>
                     </div>
+                    <br></br>
             </div>
 
     <script type = "text/javascript">
     let text = null;
     let Received_data;
-    let coinTypeTestnet = "false";
+    let coinTypeTestnet = false;
     const strTestnet = "https://1ml.com/testnet/node/";
     const str = "https://1ml.com/node/";
     let onemlLink = null;
+
+
+    function copyClipboard(id) {
+        console.log(id);
+        var elm = document.getElementById(id);
+        // for Internet Explorer
+
+        if(document.body.createTextRange) {
+            var range = document.body.createTextRange();
+            range.moveToElementText(elm);
+            range.select();
+            document.execCommand("Copy");
+            alert("Copied!");
+        }
+        else if(window.getSelection) {
+            // other browsers
+
+            var selection = window.getSelection();
+            var range = document.createRange();
+            range.selectNodeContents(elm);
+            selection.removeAllRanges();
+            selection.addRange(range);
+            document.execCommand("Copy");
+            alert("Copied div content to clipboard");
+        }
+    }
 
 
 
@@ -218,11 +266,23 @@
                             
                                 if(coinTypeTestnet){
                                     onemlLink = strTestnet.concat(Received_data.decode[properties] )
-                                    $(".inside").append("<tr><td class = 'firstColumn'>"+properties+"</td> <td class = 'width'>"+ "<a style = 'color: purple' target='_blank' href = '"+onemlLink+"' >" + Received_data.decode[properties]+"</a></td></tr>");
+                                    $(".inside").append(`<tr>
+                                                            <td class = 'firstColumn'>${properties}</td> 
+                                                            <td class = 'width'>
+                                                                <a id='nodekey' style = 'color: purple' target='_blank' href = '${onemlLink}' >${Received_data.decode[properties]}</a>
+                                                                <i style='cursor:pointer' onClick='copyClipboard("nodekey")' class='far fa-copy'></i>
+                                                            </td>
+                                                        </tr>`);
                                     
                                 }else{
                                     onemlLink = str.concat(Received_data.decode[properties] )
-                                    $(".inside").append("<tr><td class = 'firstColumn'>"+properties+"</td> <td class = 'width'>"+ "<a target='_blank' style = 'color: purple' href = '"+onemlLink+"' >" + Received_data.decode[properties]+"</a></td></tr>");
+                                    $(".inside").append(`<tr>
+                                                            <td class = 'firstColumn'>${properties}</td> 
+                                                            <td class = 'width'>
+                                                                <a id='nodekey' target='_blank' style = 'color: purple' href = '${onemlLink}' > ${Received_data.decode[properties]}</a>
+                                                                <i style='cursor:pointer' onClick='copyClipboard("nodekey")' class='far fa-copy'></i>
+                                                            </td>
+                                                            </tr>`);
                                 
                                 }
 
@@ -232,7 +292,8 @@
                         }
                     }
                     
-                    $('#rawData').html("<h3>JSON data</h3><pre>"+ JSON.stringify(data, null, 2) + "</pre>");
+                    $('#rawData').html(`<h3>JSON data <i style='cursor:pointer' onClick='copyClipboard("json")' class='far fa-copy'></i></h3>
+                                            <pre id='json'>${JSON.stringify(data, null, 2)}</pre>`);
                 }
             }
 
