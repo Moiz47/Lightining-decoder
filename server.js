@@ -16,6 +16,9 @@ app.get('/', function(req, res) {
 //    res.send('pong');
 //});
 
+app.use(express.static(path.join(__dirname, 'assets')))
+console.log(path.join(__dirname, 'assets', 'resize.jpg'))
+
 
 console.log(path.join(`${__dirname}/.well-known/acme-challenge`));
 app.use('/.well-known/acme-challenge', express.static(path.join(`${__dirname}/.well-known/acme-challenge`), { dotfiles: 'allow' } ));

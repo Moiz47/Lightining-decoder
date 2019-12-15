@@ -102,14 +102,71 @@
             }
 
             .text{
-                width: 70%;
-                padding: 0px 20px;
+                width: 100%;
+                padding: 0px 0px;
             }
 
-            .btn.btn-primary {
+            .bigButton {
                 font-size: 58px;
-                padding: 36px 90px;         
+                padding: 36px 90px;    
+                
             }
+
+            #responsiveButton{
+                display:none
+            }
+
+            .center{
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+               }
+            
+            .col-sm{
+                padding-top: 10px;
+            }
+
+            .coll{
+                width: 75%;
+                padding-left: 12px;
+            }
+
+            @media (max-width: 1200px){
+                .coll{
+                    width: 65% ;
+                    
+                }
+            }
+            @media (max-width: 995px){
+                .coll{
+                    width: 55%;
+                    
+                    
+                }
+            }
+
+            @media (max-width: 767px){
+                .coll{
+                    width: 100%;
+                    padding-right: 15px
+                }
+
+                .bigButton {
+                    display:none
+                    }
+
+                #responsiveButton{
+                    display:block
+                }
+                
+                
+            }
+
+           
+
+
+           
+
 
         </style>
     </head>
@@ -145,20 +202,27 @@
                             <p>A tool for decoding lightning network payment invoice as defined in <span>
                                 <a href="https://github.com/lightningnetwork/lightning-rfc/blob/master/11-payment-encoding.md">BOLT #11.</a>
                             </span></p>
-                        </div>    
-                        <div class = "textBoxStyling">
-                            <form class = "text">
-                                <div class= "form-group">
-                                    <label for = "textarea">Enter Your Invoice:</label>
-                                    <textarea name = "mytext" class = "form-control" id = "textarea" rows="5" placeholder="Enter request string"></textarea> 
-                                </div>      
-                            </form>
-                            <button class="btn btn-primary" id = "but"><i class="fas fa-bolt"></i></button>
-                        </div>           
+                        </div> 
 
-                        <div id = "alertDiv" class = "alert alert-danger alert-dismissible fade show" role = "alert">  
+                            <div class = "row center">
+                                <div class = "coll">
+                                    <form class = "text">
+                                        <div class= "form-group">
+                                            <label for = "textarea">Enter Your Invoice:</label>
+                                            <textarea name = "mytext" class = "form-control" id = "textarea" rows="5" placeholder="Enter request string"></textarea> 
+                                        </div>      
+                                    </form>
+                                    <button type="button" id = "responsiveButton" class="btn btn-primary btn-block but">Decode</button>
+                                </div>
+                                <div class = "col-sm">
+                                    <button class="btn btn-primary bigButton but"><i class="fas fa-bolt"></i></button>
+                                </div>   
+                            </div> 
+                            
+
+                            <div id = "alertDiv" class = "alert alert-danger alert-dismissible fade show" role = "alert">  
                            
-                        </div>
+                            </div>
 
                         <div id = "OutputDiv" class = "alert alert-warning">
                             <div><h3>Invoice Information</h3></div>
@@ -185,11 +249,15 @@
                     </div>
 
                     <div class = "para">
+                        
+                        <img src = "resize.jpg" alt ="qrCode" width="150" height="150">
+                        <p>lndecode.ciphertrick.com</p>
                         <a href = "https://github.com/Moiz47/Lightining-decoder">https://github.com/Moiz47/Lightining-decoder</a>
                         <p class = "bottomPara">Developed and powered by 
                             <a href ="https://Ciphertrick.com"> Ciphertrick.com</a></p>
                     </div>
                     <br></br>
+                    
             </div>
 
     <script type = "text/javascript">
@@ -229,7 +297,7 @@
 
 
 
-        $("#but").click(function(){
+        $(".but").click(function(){
             let errorMsg = "";
             text = $("#textarea").val();
 
@@ -250,7 +318,7 @@
                         coinTypeTestnet = true;
                         
                     }
-                    console.log(coinTypeTestnet);
+                   // console.log(coinTypeTestnet);
 
                     const tag_array = Received_data.decode.tags;
                     for(let i=0; i<tag_array.length; i++){   
@@ -261,7 +329,7 @@
                     for(let properties in Received_data.decode){
                          
                         if(Received_data.decode.tags != Received_data.decode[properties]){
-                            console.log("hello");
+                            //console.log("hello");
                             if(properties == "payeeNodeKey"){
                             
                                 if(coinTypeTestnet){
